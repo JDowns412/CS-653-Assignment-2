@@ -1,8 +1,10 @@
 #Create a simulator object
 set ns [new Simulator]
 
+set x 99
+
 #Open the trace file (before you start the experiment!)
-set tf [open first_output.tr w]
+set tf [open $x w]
 $ns trace-all $tf
 
 #Define a 'finish' procedure

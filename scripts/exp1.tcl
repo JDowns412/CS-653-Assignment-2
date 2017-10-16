@@ -67,7 +67,7 @@ $ns connect $udp $null
 set cbr [new Application/Traffic/CBR]
 $cbr attach-agent $udp
 $cbr set type_ CBR
-$cbr set packet_size_ 1000
+$cbr set packet_size_ 500
 #change the rate for generalizable results
 $cbr set rate_ 1mb
 #the below is a flag indicating whether or not to introduce random "noise" in the schedules transmission times. It is "off" by default, and can be set to be "on" by typing "set random_ 1"
