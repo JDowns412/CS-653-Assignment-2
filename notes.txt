@@ -1,0 +1,5 @@
+Apparently there's no need ot change the PATH variable on the edlab machines, 
+running 'ns [.tcl filename]' runs just fine'
+
+run "ns-sample".tcl to output a sample trace of an example session. 
+This generates the type of output file that we will have to parse through and make sense of
