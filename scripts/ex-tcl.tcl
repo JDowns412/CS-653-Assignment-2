@@ -20,7 +20,7 @@ proc test {} {
         switch -exact -- $i {
             1 {
                 set t 0.95
-                puts $t
+                # puts "running on [$t]"
             }
             2 {puts "two"}
             3 {
