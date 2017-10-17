@@ -11,7 +11,35 @@ proc test {} {
 	    puts "k >= 5, mod = [expr $d % $k]"
 	}
     }
+    set test "[expr 2+2]"
+    puts "hello"
+    puts $test
+
+    for {set i 1} {$i <= 3} {incr i} {
+
+        switch -exact -- $i {
+            1 {
+                set t 0.95
+                puts $t
+            }
+            2 {puts "two"}
+            3 {
+                puts "three"
+            }
+            default {puts "nope"}
+        }
+    }
+
+    set ns [new Simulator]
+    set j 1
+    set l 20
+    set test [expr $j + $l]
+    set tf [open $test w]
+    $ns trace-all $tf
+    close $tf
+
 }
+
 
 # Calling the "test" procedure created above
 test
