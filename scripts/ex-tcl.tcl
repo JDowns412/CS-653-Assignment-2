@@ -40,6 +40,11 @@ proc test {} {
 
 }
 
+proc two {} {
+    exit 0
+}
+
 
 # Calling the "test" procedure created above
 test
+two
