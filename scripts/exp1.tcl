@@ -31,7 +31,12 @@ switch -exact -- $i {
         7 {set percent 0.90}
         8 {set percent 0.95}
         9 {set percent 0.99}
-        default {percent 0.00}
+        10 {set percent 1.00}
+        11 {set percent 1.05}
+        12 {set percent 1.10}
+        13 {set percent 1.25}
+        14 {set percent 1.50}
+        default {set percent 0.00}
 }
 
 
@@ -41,11 +46,18 @@ set ns [new Simulator]
 #used to create the trace file below, 
 # such that we know which results correspond to which experiment
 set filename [expr $percent + $k]
+# set namfile [expr $filename * -1]
 
 #Open the trace file (before you start the experiment!)
 set tf [open $filename w]
 $ns trace-all $tf
+
+#Open the NAM trace file
+# set nf [open namfile w]
+# $ns namtrace-all $nf
+
 puts $filename
+# puts $namfile
 #Define a 'finish' procedure
 proc finish {} {
         global ns tf
@@ -53,6 +65,10 @@ proc finish {} {
         
         # Close the trace file (after you finish the experiment!)
         close $tf
+        #Close the NAM trace file
+        # close $nf
+        #Execute NAM on the trace file
+        # exec nam out.nam &
         exit 0
 }
 
@@ -72,17 +88,25 @@ $ns duplex-link $n2 $n3 10Mb 10ms DropTail
 $ns duplex-link $n3 $n4 10Mb 10ms DropTail
 $ns duplex-link $n3 $n6 10Mb 10ms DropTail
 
+#Give node position (for NAM)
+$ns duplex-link-op $n1 $n2 orient right-down
+$ns duplex-link-op $n5 $n2 orient right-up
+$ns duplex-link-op $n2 $n3 orient right
+$ns duplex-link-op $n3 $n4 orient right-up
+$ns duplex-link-op $n3 $n6 orient right-down
+
 #Setup the TCP connection
 switch -exact -- $k {
-        1 {set tcp [new Agent/TCP]}
-        2 {set tcp [new Agent/TCP/Reno]}
-        3 {set tcp [new Agent/TCP/Newreno]}
-        4 {set tcp [new Agent/TCP/Vegas]}
+        10 {set tcp [new Agent/TCP]}
+        20 {set tcp [new Agent/TCP/Reno]}
+        30 {set tcp [new Agent/TCP/Newreno]}
+        40 {set tcp [new Agent/TCP/Vegas]}
         default {set tcp [new Agent/TCP]}
 }
 
 # TCP agent selection is done above in the switch
 $tcp set class_ 1
+$tcp set fid_ 1
 $ns attach-agent $n1 $tcp
 set sink [new Agent/TCPSink]
 $ns attach-agent $n4 $sink
@@ -95,6 +119,7 @@ $ftp set type_ FTP
 
 #Setup a UDP connection
 set udp [new Agent/UDP]
+$udp set fid_ 2
 $ns attach-agent $n2 $udp
 set null [new Agent/Null]
 $ns attach-agent $n3 $null
@@ -116,6 +141,11 @@ switch -exact -- $i {
             7 {$cbr set rate_ 9.0Mb}
             8 {$cbr set rate_ 9.5Mb}
             9 {$cbr set rate_ 9.9Mb}
+            10 {$cbr set rate_ 10Mb}
+            11 {$cbr set rate_ 10.5Mb}
+            12 {$cbr set rate_ 11Mb}
+            13 {$cbr set rate_ 12.5Mb}
+            14 {$cbr set rate_ 15Mb}
             default {$cbr set rate_ 0.0Mb}
 }
 
@@ -127,15 +157,15 @@ $cbr set random_ 1
 
 
 #Schedule events for the CBR and FTP agents
-#  maybe change this for generalizing th experiment?
+#  maybe change this for generalizing the experiment?
 # starting at 30 seconds to keep the data low, maybe change later
 $ns at 0.1 "$cbr start"
 $ns at 1 "$ftp start"
-$ns at 31 "$cbr stop"
-$ns at 31 "$ftp stop"
+$ns at 5 "$cbr stop"
+$ns at 5 "$ftp stop"
 
 #Call the finish procedure after 5 seconds of simulation time
-$ns at 32 "finish"
+$ns at 6 "finish"
 
 #Print CBR packet size and interval
 # puts "CBR packet size = [$cbr set packet_size_]"
